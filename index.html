@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EZONOMAD GAMES - ブラウザゲーム集</title>
+<meta name="description" content="ezonomad110 の自作ブラウザゲーム置き場。SABER BREAKER、Retro Tennis、重棋が遊べます。">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body { min-height:100%; }
+  body {
+    background:#05010f; color:#e5e7eb;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP",system-ui,sans-serif;
+    overflow-x:hidden;
+  }
+  #stars { position:fixed; inset:0; z-index:0; pointer-events:none; }
+  .wrap { position:relative; z-index:1; max-width:980px; margin:0 auto; padding:48px 18px 40px; }
+  header { text-align:center; margin-bottom:38px; }
+  h1 {
+    font-size:clamp(30px,7vw,52px); font-weight:900; letter-spacing:.06em; line-height:1.15;
+    background:linear-gradient(90deg,#22d3ee,#818cf8,#f472b6,#22d3ee);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    filter:drop-shadow(0 0 14px rgba(56,189,248,.45));
+  }
+  .sub { margin-top:10px; color:#a5b4fc; font-size:15px; letter-spacing:.12em; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(272px,1fr)); gap:20px; }
+  .card {
+    background:rgba(17,12,38,.82); border:1px solid rgba(129,140,248,.35); border-radius:16px;
+    overflow:hidden; display:flex; flex-direction:column;
+    box-shadow:0 0 0 rgba(0,0,0,0); transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+  }
+  .card:active, .card:hover { transform:translateY(-3px); border-color:rgba(244,114,182,.7); box-shadow:0 10px 34px rgba(99,102,241,.35); }
+  .art { height:132px; position:relative; overflow:hidden; }
+  .card-body { padding:16px 18px 18px; display:flex; flex-direction:column; gap:9px; flex:1; }
+  .card h2 { font-size:21px; font-weight:800; letter-spacing:.03em; }
+  .desc { color:#c7d2fe; font-size:14px; line-height:1.65; flex:1; }
+  .tags { display:flex; flex-wrap:wrap; gap:6px; }
+  .tag { font-size:11px; color:#e0e7ff; border:1px solid rgba(165,180,252,.5); border-radius:999px; padding:2px 9px; }
+  .links { display:flex; gap:10px; align-items:center; margin-top:4px; }
+  .play {
+    flex:1; text-align:center; text-decoration:none; font-weight:800; font-size:16px; color:#05010f;
+    background:linear-gradient(90deg,#22d3ee,#818cf8); border-radius:10px; padding:11px 0;
+    box-shadow:0 0 16px rgba(56,189,248,.45);
+  }
+  .gh { color:#a5b4fc; font-size:13px; text-decoration:none; border-bottom:1px dotted rgba(165,180,252,.6); padding-bottom:1px; white-space:nowrap; }
+
+  /* --- SABER BREAKER art: saber slash + invader dots --- */
+  .art-saber { background:radial-gradient(120% 130% at 50% 0%, #1e1b4b 0%, #05010f 70%); }
+  .art-saber .beam {
+    position:absolute; left:8%; top:62%; width:84%; height:9px; border-radius:99px;
+    background:linear-gradient(90deg,#e0f2fe,#38bdf8); transform:rotate(-24deg); transform-origin:left center;
+    box-shadow:0 0 12px #38bdf8, 0 0 34px #38bdf8, 0 0 60px rgba(56,189,248,.7);
+  }
+  .art-saber .hilt { position:absolute; left:5%; top:70%; width:34px; height:12px; border-radius:3px; background:#1f2937; border:1px solid #9ca3af; transform:rotate(-24deg); }
+  .art-saber .foe { position:absolute; width:12px; height:9px; background:#f472b6; box-shadow:0 0 10px #f472b6; }
+  .art-saber .foe::after { content:""; position:absolute; left:3px; top:3px; width:6px; height:3px; background:#05010f; }
+  .art-saber .f1 { right:16%; top:16%; } .art-saber .f2 { right:30%; top:30%; background:#c084fc; box-shadow:0 0 10px #c084fc; }
+  .art-saber .f3 { right:9%; top:38%; background:#ef4444; box-shadow:0 0 10px #ef4444; }
+
+  /* --- Retro Tennis art: neon court --- */
+  .art-tennis { background:linear-gradient(180deg,#0b1030,#05010f); }
+  .art-tennis .court {
+    position:absolute; left:50%; top:14px; width:190px; height:104px; transform:translateX(-50%) perspective(240px) rotateX(38deg);
+    border:2px solid #22d3ee; box-shadow:0 0 16px rgba(34,211,238,.65), inset 0 0 18px rgba(34,211,238,.25);
+    background:linear-gradient(180deg, rgba(34,211,238,.10), rgba(129,140,248,.10));
+  }
+  .art-tennis .court::before { content:""; position:absolute; left:50%; top:0; bottom:0; width:2px; background:#22d3ee; transform:translateX(-50%); }
+  .art-tennis .court::after { content:""; position:absolute; left:0; right:0; top:50%; height:2px; background:#f472b6; box-shadow:0 0 10px #f472b6; }
+  .art-tennis .ball { position:absolute; left:63%; top:26px; width:13px; height:13px; border-radius:50%; background:#a3e635; box-shadow:0 0 14px #a3e635; }
+
+  /* --- Chogi art: black & gold piece --- */
+  .art-chogi { background:radial-gradient(110% 130% at 50% 0%, #221a08 0%, #0a0703 72%); }
+  .art-chogi .piece {
+    position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+    width:74px; height:84px; background:linear-gradient(180deg,#171106,#050403);
+    clip-path:polygon(50% 0, 88% 14%, 100% 100%, 0 100%, 12% 14%);
+    border:1px solid #d4af37; display:flex; align-items:center; justify-content:center;
+    box-shadow:0 0 22px rgba(212,175,55,.5);
+  }
+  .art-chogi .piece span {
+    font-family:"Hiragino Mincho ProN","Yu Mincho",serif; font-size:37px; font-weight:700; color:#f5d67b;
+    text-shadow:0 0 12px rgba(245,214,123,.85); transform:translateY(6px);
+  }
+  .art-chogi .glow2 { position:absolute; left:calc(50% + 52px); top:calc(50% - 46px); font-family:"Hiragino Mincho ProN",serif; color:#fb7185; font-size:19px; text-shadow:0 0 10px rgba(251,113,133,.9); }
+
+  footer { margin-top:42px; text-align:center; color:#6b7280; font-size:13px; line-height:2; }
+  footer a { color:#a5b4fc; text-decoration:none; border-bottom:1px dotted rgba(165,180,252,.6); }
+</style>
+</head>
+<body>
+<canvas id="stars"></canvas>
+<div class="wrap">
+  <header>
+    <h1>EZONOMAD GAMES</h1>
+    <p class="sub">ブラウザでそのまま遊べる、自作ゲーム置き場</p>
+  </header>
+
+  <div class="grid">
+    <!-- SABER BREAKER -->
+    <article class="card">
+      <div class="art art-saber"><div class="beam"></div><div class="hilt"></div><div class="foe f1"></div><div class="foe f2"></div><div class="foe f3"></div></div>
+      <div class="card-body">
+        <h2>SABER BREAKER</h2>
+        <p class="desc">ライトセイバーを振って弾を跳ね返し、迫る編隊を撃ち抜く。インベーダー×ブロック崩し。チェーンを繋ぐほど弾が速く・強くなり、貫通も増える。</p>
+        <div class="tags"><span class="tag">アクション</span><span class="tag">スマホ向け</span><span class="tag">ネオン</span></div>
+        <div class="links">
+          <a class="play" href="/invaders/">▶ 遊ぶ</a>
+          <a class="gh" href="https://github.com/ezonomad110/invaders">GitHub</a>
+        </div>
+      </div>
+    </article>
+
+    <!-- Retro Tennis -->
+    <article class="card">
+      <div class="art art-tennis"><div class="court"></div><div class="ball"></div></div>
+      <div class="card-body">
+        <h2>Retro Tennis</h2>
+        <p class="desc">ファミコン風テニスのオマージュ。スピン／スライス／ロブ／ドロップの球種チェーンで球速が育つ。シングルス＆ダブルス、ネオンの「ルミナス」モード搭載。</p>
+        <div class="tags"><span class="tag">スポーツ</span><span class="tag">レトロ</span><span class="tag">ダブルス対応</span></div>
+        <div class="links">
+          <a class="play" href="/tennis/">▶ 遊ぶ</a>
+          <a class="gh" href="https://github.com/ezonomad110/tennis">GitHub</a>
+        </div>
+      </div>
+    </article>
+
+    <!-- Chogi -->
+    <article class="card">
+      <div class="art art-chogi"><div class="piece"><span>重</span></div><div class="glow2">×4</div></div>
+      <div class="card-body">
+        <h2>重棋（ちょうぎ）</h2>
+        <p class="desc">将棋盤で自分の駒を最大4つまで重ねて合体させる変則将棋。重なった駒はまとめて動き、取られるとバラける。漆黒×金の盤面で合体が発光する。</p>
+        <div class="tags"><span class="tag">ボードゲーム</span><span class="tag">対戦</span><span class="tag">変則将棋</span></div>
+        <div class="links">
+          <a class="play" href="/game/">▶ 遊ぶ</a>
+          <a class="gh" href="https://github.com/ezonomad110/game">GitHub</a>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <footer>
+    つくった人: <a href="https://github.com/ezonomad110">ezonomad110</a><br>
+    全部ブラウザだけで動きます。インストール不要。
+  </footer>
+</div>
+
+<script>
+  // tiny starfield, same mood as the games
+  const cv = document.getElementById('stars'), cx = cv.getContext('2d');
+  let stars = [];
+  function init(){
+    cv.width = innerWidth; cv.height = innerHeight;
+    stars = Array.from({length: 110}, () => ({ x: Math.random()*cv.width, y: Math.random()*cv.height, r: Math.random()*1.4+0.3, p: Math.random()*6.28, s: 0.4+Math.random()*1.2 }));
+  }
+  init(); addEventListener('resize', init);
+  (function loop(t){
+    cx.clearRect(0, 0, cv.width, cv.height);
+    for (const s of stars){ cx.globalAlpha = 0.35 + 0.4*Math.abs(Math.sin(t*0.001*s.s + s.p)); cx.fillStyle = '#c7d2fe'; cx.beginPath(); cx.arc(s.x, s.y, s.r, 0, 6.283); cx.fill(); }
+    cx.globalAlpha = 1;
+    requestAnimationFrame(loop);
+  })(0);
+</script>
+</body>
+</html>
