@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EZONOMAD GAMES - ブラウザゲーム集</title>
-<meta name="description" content="ezonomad110 の自作ブラウザゲーム置き場。SABER BREAKER、Retro Tennis、重棋が遊べます。">
+<meta name="description" content="ezonomad110 の自作ブラウザゲーム置き場。SABER BREAKER、Retro Tennis、重棋、TOTONOS、777が遊べます。">
 <style>
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   html,body { min-height:100%; }
@@ -83,6 +83,24 @@
   }
   .art-chogi .glow2 { position:absolute; left:calc(50% + 52px); top:calc(50% - 46px); font-family:"Hiragino Mincho ProN",serif; color:#fb7185; font-size:19px; text-shadow:0 0 10px rgba(251,113,133,.9); }
 
+  /* --- TOTONOS art: sauna blocks (red square / blue route / green cluster) --- */
+  .art-totonos { background:radial-gradient(120% 140% at 50% 0%, #3a1408 0%, #140505 72%); }
+  .art-totonos .sq { position:absolute; width:13px; height:13px; border-radius:2px; }
+  .art-totonos .red { background:#f87171; box-shadow:0 0 8px rgba(248,113,113,.8); }
+  .art-totonos .blue { background:#38bdf8; box-shadow:0 0 8px rgba(56,189,248,.8); }
+  .art-totonos .green { background:#4ade80; box-shadow:0 0 8px rgba(74,222,128,.8); }
+  .art-totonos .steam { position:absolute; top:12px; width:5px; height:34px; border-radius:99px; background:linear-gradient(180deg, rgba(255,255,255,0), rgba(255,255,255,.55), rgba(255,255,255,0)); filter:blur(1px); }
+
+  /* --- 777 art: cyber neon numerals --- */
+  .art-777 { background:linear-gradient(180deg,#0d0221,#05010f); display:flex; align-items:center; justify-content:center; }
+  .art-777 .nums {
+    font-size:64px; font-weight:900; letter-spacing:.08em;
+    background:linear-gradient(180deg,#f0abfc,#e879f9 45%,#22d3ee);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    filter:drop-shadow(0 0 16px rgba(232,121,249,.75));
+  }
+  .art-777 .scan { position:absolute; left:0; right:0; top:50%; height:2px; background:rgba(34,211,238,.5); box-shadow:0 0 12px #22d3ee; }
+
   footer { margin-top:42px; text-align:center; color:#6b7280; font-size:13px; line-height:2; }
   footer a { color:#a5b4fc; text-decoration:none; border-bottom:1px dotted rgba(165,180,252,.6); }
 </style>
@@ -137,6 +155,33 @@
         </div>
       </div>
     </article>
+    <!-- TOTONOS -->
+    <article class="card">
+      <div class="art art-totonos" id="totonosArt"><div class="steam" style="left:30%"></div><div class="steam" style="left:52%; height:26px"></div><div class="steam" style="left:72%"></div></div>
+      <div class="card-body">
+        <h2>TOTONOS（トトノス）</h2>
+        <p class="desc">「サウナ→水風呂→ととのい」の3フェーズを巡る落ちものパズル。フェーズごとに消し方が変わる（赤は3×3正方形、青は両端へのルート、緑は4つ繋げ）。必殺技「熱波」で下段を一掃してととのえ。</p>
+        <div class="tags"><span class="tag">落ちものパズル</span><span class="tag">サウナ</span><span class="tag">フェーズ制</span></div>
+        <div class="links">
+          <a class="play" href="/totonos/">▶ 遊ぶ</a>
+          <a class="gh" href="https://github.com/ezonomad110/totonos">GitHub</a>
+        </div>
+      </div>
+    </article>
+
+    <!-- 777 -->
+    <article class="card">
+      <div class="art art-777"><div class="nums">777</div><div class="scan"></div></div>
+      <div class="card-body">
+        <h2>777 - Cyber Neon Puzzle</h2>
+        <p class="desc">数字ブロックの合計をちょうど「7」にして消す、サイバーネオンな落ちものパズル。「7」を3つ以上並べると行・列まるごと全消去のスペシャルボーナスが発動する。</p>
+        <div class="tags"><span class="tag">数字パズル</span><span class="tag">ネオン</span><span class="tag">コンボ</span></div>
+        <div class="links">
+          <a class="play" href="/777/">▶ 遊ぶ</a>
+          <a class="gh" href="https://github.com/ezonomad110/777">GitHub</a>
+        </div>
+      </div>
+    </article>
   </div>
 
   <footer>
@@ -146,6 +191,14 @@
 </div>
 
 <script>
+  // TOTONOS card art: build the block clusters (red 3x3 / blue route / green 2x2)
+  (function(){
+    const art = document.getElementById('totonosArt'); if (!art) return;
+    const add = (cls, x, y) => { const d = document.createElement('div'); d.className = 'sq ' + cls; d.style.left = x + 'px'; d.style.top = y + 'px'; art.appendChild(d); };
+    for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) add('red', 22 + c * 16, 78 + r * 16);
+    for (let c = 0; c < 5; c++) add('blue', 96 + c * 16, 110);
+    add('green', 196, 78); add('green', 212, 78); add('green', 196, 94); add('green', 212, 94);
+  })();
   // tiny starfield, same mood as the games
   const cv = document.getElementById('stars'), cx = cv.getContext('2d');
   let stars = [];
