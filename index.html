@@ -101,6 +101,19 @@
   }
   .art-777 .scan { position:absolute; left:0; right:0; top:50%; height:2px; background:rgba(34,211,238,.5); box-shadow:0 0 12px #22d3ee; }
 
+  /* --- Yukiita art: snowy slope, gate pair and a carving trail --- */
+  .art-yukiita { background:linear-gradient(180deg,#081a3a 0%, #2f6db3 52%, #dcefff 54%, #ffffff 100%); }
+  .art-yukiita .pole { position:absolute; top:44%; width:4px; height:38px; border-radius:2px; }
+  .art-yukiita .pole::before { content:""; position:absolute; top:0; width:15px; height:9px; }
+  .art-yukiita .p1 { left:40%; background:#ef4444; box-shadow:0 0 9px rgba(239,68,68,.8); }
+  .art-yukiita .p1::before { left:4px; background:#ef4444; }
+  .art-yukiita .p2 { left:57%; background:#3b82f6; box-shadow:0 0 9px rgba(59,130,246,.8); }
+  .art-yukiita .p2::before { right:4px; background:#3b82f6; }
+  .art-yukiita .trail { position:absolute; left:16%; top:64%; width:150px; height:34px; border-bottom:5px solid rgba(56,150,248,.65); border-radius:50%; transform:rotate(-13deg); }
+  .art-yukiita .rider { position:absolute; left:64%; top:59%; width:13px; height:13px; border-radius:4px; background:#e11d48; box-shadow:0 0 12px rgba(225,29,72,.75); transform:rotate(-18deg); }
+  .art-yukiita .spray { position:absolute; width:5px; height:5px; border-radius:50%; background:#fff; box-shadow:0 0 7px #fff; }
+  .art-yukiita .s1 { left:59%; top:56%; } .art-yukiita .s2 { left:70%; top:63%; width:4px; height:4px; } .art-yukiita .s3 { left:55%; top:66%; width:3px; height:3px; }
+
   footer { margin-top:42px; text-align:center; color:#6b7280; font-size:13px; line-height:2; }
   footer a { color:#a5b4fc; text-decoration:none; border-bottom:1px dotted rgba(165,180,252,.6); }
 </style>
@@ -114,6 +127,20 @@
   </header>
 
   <div class="grid">
+    <!-- Yukiita -->
+    <article class="card">
+      <div class="art art-yukiita"><div class="pole p1"></div><div class="pole p2"></div><div class="trail"></div><div class="rider"></div><div class="spray s1"></div><div class="spray s2"></div><div class="spray s3"></div></div>
+      <div class="card-body">
+        <h2>雪板 Yukiita</h2>
+        <p class="desc">3Dスノーボードで山頂から麓のロッジへ滑り降りるタイムアタック。ゲート通過で制限時間が延び、カービングとジャンプで障害物をかわす。雪山／夜／宇宙の3モード×3コース、障害物なしでゲートだけを追う「ゲートラン」も。</p>
+        <div class="tags"><span class="tag">3Dアクション</span><span class="tag">スマホ向け</span><span class="tag">タイムアタック</span></div>
+        <div class="links">
+          <a class="play" href="/yukiita/">▶ 遊ぶ</a>
+          <a class="gh" href="https://github.com/ezonomad110/yukiita">GitHub</a>
+        </div>
+      </div>
+    </article>
+
     <!-- SABER BREAKER -->
     <article class="card">
       <div class="art art-saber"><div class="beam"></div><div class="hilt"></div><div class="foe f1"></div><div class="foe f2"></div><div class="foe f3"></div></div>
